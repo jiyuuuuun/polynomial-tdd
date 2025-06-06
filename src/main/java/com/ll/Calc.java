@@ -1,5 +1,7 @@
 package com.ll;
 
+import java.util.Arrays;
+
 public class Calc {
     public static int run(String input) {
         // 공백 먼저 제거 (또는 trim 처리로도 가능)
@@ -11,9 +13,11 @@ public class Calc {
         // + 기준으로 분리
         String[] exprBites=input.split("\\+"); // +는 정규표현식에서 특별한 문자이므로, 이스케이프 문자로 \\+ 써야 함.
 
-        int num1=Integer.parseInt(exprBites[0].trim());
-        int num2=Integer.parseInt(exprBites[1].trim());
-
-        return num1+num2;
+        // 배열 스트림으로 변환 → 각 문자열을 정수로 파싱 → 모두 더하기
+        int sum=Arrays.stream(exprBites)
+                .map(Integer::parseInt) // 문자열 → 정수 변환
+                .reduce((a,b)->a+b)// 누적 덧셈
+                .orElse(0); // 빈 배열이면 기본값 0
+        return sum;
     }
 }
