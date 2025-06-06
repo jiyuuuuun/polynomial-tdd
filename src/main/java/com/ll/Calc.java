@@ -6,6 +6,9 @@ public class Calc {
     public static int run(String input) {
         // 공백 먼저 제거 (또는 trim 처리로도 가능)
         input = input.replace(" ", "");
+
+        input=removeUnnecessaryBrackets(input);
+
         if(input.contains("*") && input.contains("+")){
             String[] exprBites=input.split("\\+");
 
@@ -39,5 +42,12 @@ public class Calc {
                 .reduce((a,b)->a+b)// 누적 덧셈
                 .orElse(0); // 빈 배열이면 기본값 0
         return sum;
+    }
+
+    private static String removeUnnecessaryBrackets(String expr) {
+        if(expr.startsWith("(") && expr.endsWith(")")){
+            return expr.substring(1, expr.length()-1);
+        }
+        return expr;
     }
 }
