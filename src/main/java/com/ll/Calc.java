@@ -2,27 +2,18 @@ package com.ll;
 
 public class Calc {
     public static int run(String input) {
-        if(input.contains("+")) {
-            // 문자열을 "+" 기준으로 나눔
-            String[] parts = input.split("\\+");
+        // 공백 먼저 제거 (또는 trim 처리로도 가능)
+        input = input.replace(" ", "");
 
-            int sum = 0;
-            for (String part : parts) {
-                sum += Integer.parseInt(part.trim());
-            }
-            return sum;
-        }else{
-            // 문자열을 "-" 기준으로 나눠 배열 생성
-            String[] parts = input.split("-");
+        // -를 부호로 바꾸기
+        input=input.replaceAll("-","+-");
 
-            // 결과는 배열의 첫 번째 숫자부터 시작
-            int result = Integer.parseInt(parts[0].trim());
+        // + 기준으로 분리
+        String[] exprBites=input.split("\\+"); // +는 정규표현식에서 특별한 문자이므로, 이스케이프 문자로 \\+ 써야 함.
 
-            // 배열의 두 번째 요소부터 반복하며 뺄셈 수행
-            for (int i = 1; i < parts.length; i++) {
-                result -= Integer.parseInt(parts[i].trim());
-            }
-            return result;
-        }
+        int num1=Integer.parseInt(exprBites[0].trim());
+        int num2=Integer.parseInt(exprBites[1].trim());
+
+        return num1+num2;
     }
 }
