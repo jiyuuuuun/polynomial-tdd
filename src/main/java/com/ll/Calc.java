@@ -4,8 +4,20 @@ import java.util.Arrays;
 
 public class Calc {
     public static int run(String input) {
+        // 공백 먼저 제거 (또는 trim 처리로도 가능)
+        input = input.replace(" ", "");
+        if(input.contains("*") && input.contains("+")){
+            String[] exprBites=input.split("\\+");
+
+            int sum=Arrays.stream(exprBites)
+                    .map(Calc::run)
+                    .reduce((a,b)->a+b)// 누적 덧셈
+                    .orElse(0); // 빈 배열이면 기본값 0
+            return sum;
+
+        }
         if(input.contains("*")){
-            input = input.replace(" ", "");
+
             String[] expr = input.split("\\*");
 
             int sum=Arrays.stream(expr)
@@ -15,9 +27,6 @@ public class Calc {
             return sum;
 
         }
-        // 공백 먼저 제거 (또는 trim 처리로도 가능)
-        input = input.replace(" ", "");
-
         // -를 부호로 바꾸기
         input=input.replaceAll("-","+-");
 
