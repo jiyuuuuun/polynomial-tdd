@@ -4,6 +4,17 @@ import java.util.Arrays;
 
 public class Calc {
     public static int run(String input) {
+        if(input.contains("*")){
+            input = input.replace(" ", "");
+            String[] expr = input.split("\\*");
+
+            int sum=Arrays.stream(expr)
+                    .map(Integer::parseInt) // 문자열 → 정수 변환
+                    .reduce((a,b)->a*b)// 누적 곱셈
+                    .orElse(0); // 빈 배열이면 기본값 0
+            return sum;
+
+        }
         // 공백 먼저 제거 (또는 trim 처리로도 가능)
         input = input.replace(" ", "");
 
