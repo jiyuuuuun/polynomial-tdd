@@ -4,13 +4,15 @@ import java.util.Arrays;
 
 public class Calc {
     public static int run(String input) {
-        // 공백 먼저 제거 (또는 trim 처리로도 가능)
-        input = input.replace(" ", "");
+        // 공백 먼저 제거
+        input = input.trim();
 
         input=removeUnnecessaryBrackets(input);
+        
+        input=transformMinusOuterBracket(input);
 
-        // -를 부호로 바꾸기
-        input=input.replaceAll("-","+-");
+        // 빼기를 바꾸기
+        input = input.replaceAll(" - ", " + -");
 
         if(input.contains("(")){
             String[] exprBits = splitTwoPartsBy(input, '+');
@@ -45,6 +47,7 @@ public class Calc {
             String[] expr = input.split("\\*");
 
             return Arrays.stream(expr)
+                    .map(String::trim)
                     .map(Integer::parseInt) // 문자열 → 정수 변환
                     .reduce((a,b)->a*b)// 누적 곱셈
                     .orElse(0); // 빈 배열이면 기본값 0
@@ -54,10 +57,20 @@ public class Calc {
         String[] exprBites=input.split("\\+"); // +는 정규표현식에서 특별한 문자이므로, 이스케이프 문자로 \\+ 써야 함.
 
         return Arrays.stream(exprBites)
+                .map(String::trim)
                 .map(Integer::parseInt) // 문자열 → 정수 변환
                 .reduce((a,b)->a+b)// 누적 덧셈
                 .orElse(0); // 빈 배열이면 기본값 0
     }
+
+    private static String transformMinusOuterBracket(String input) {
+        if(input.startsWith("-(") && input.endsWith(")")){
+            return input.substring(1, input.length()) + "*-1";
+        }
+        return input;
+    }
+
+
 
     private static String[] splitTwoPartsBy(String input, char splitChar) {
         int bracketDepth=0;
