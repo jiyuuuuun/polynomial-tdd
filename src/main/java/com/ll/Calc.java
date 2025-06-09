@@ -90,9 +90,31 @@ public class Calc {
     }
 
     private static String removeUnnecessaryBrackets(String expr) {
-        if(expr.startsWith("(") && expr.endsWith(")")){
+        if(isOneBracketed(expr)){
             return removeUnnecessaryBrackets( expr.substring(1, expr.length()-1));
         }
         return expr;
+    }
+
+    private static boolean isOneBracketed(String expr) {
+        if (!expr.startsWith("(") || !expr.endsWith(")")) return false; //문자열이 (로 시작하지 않거나 )로 끝나지 않으면 → 애초에 괄호로 감싸진 게 아니니까 false 반환.
+
+        int bracketDepth = 0; // 현재 괄호가 몇 단계로 열려 있는지를 추적
+        //괄호를 열면 +1, 닫으면 -1
+        //괄호가 딱 닫혀서 bracketDepth == 0이 되는데, 그게 문자열의 끝이 아니면 → 중간에서 괄호가 닫혔다는 뜻이라서 false 반환
+
+        for (int i = 0; i < expr.length(); i++) {
+            char c = expr.charAt(i);
+
+            if (c == '(') {
+                bracketDepth++;
+            } else if (c == ')') {
+                bracketDepth--;
+            }
+
+            if (bracketDepth == 0 && i != expr.length() - 1) return false;
+        }
+
+        return true; //위 조건을 모두 통과했다면 → 진짜로 전체가 한 쌍의 괄호로 감싸져 있으니까 true
     }
 }
