@@ -13,13 +13,20 @@ public class Calc {
         input=input.replaceAll("-","+-");
 
         if(input.contains("(")){
-            String[] exprBites=splitTwoParts(input);
+            String[] exprBits = splitTwoPartsBy(input, '+');
 
-            int sum=Arrays.stream(exprBites)
-                    .map(Calc::run)
-                    .reduce((a,b)->a+b)
-                    .orElse(0);
-            return sum;
+            if (exprBits != null) {
+                return run(exprBits[0]) + run(exprBits[1]);
+            }
+
+            exprBits = splitTwoPartsBy(input, '*');
+
+            if (exprBits != null) {
+                return run(exprBits[0]) * run(exprBits[1]);
+
+            }
+
+            throw new IllegalArgumentException("Invalid expression: " + input);
 
         }
 
@@ -37,40 +44,36 @@ public class Calc {
 
             String[] expr = input.split("\\*");
 
-            int sum=Arrays.stream(expr)
+            return Arrays.stream(expr)
                     .map(Integer::parseInt) // 문자열 → 정수 변환
                     .reduce((a,b)->a*b)// 누적 곱셈
                     .orElse(0); // 빈 배열이면 기본값 0
-            return sum;
-
         }
 
         // + 기준으로 분리
         String[] exprBites=input.split("\\+"); // +는 정규표현식에서 특별한 문자이므로, 이스케이프 문자로 \\+ 써야 함.
 
-        // 배열 스트림으로 변환 → 각 문자열을 정수로 파싱 → 모두 더하기
-        int sum=Arrays.stream(exprBites)
+        return Arrays.stream(exprBites)
                 .map(Integer::parseInt) // 문자열 → 정수 변환
                 .reduce((a,b)->a+b)// 누적 덧셈
                 .orElse(0); // 빈 배열이면 기본값 0
-        return sum;
     }
 
-    private static String[] splitTwoParts(String input) {
+    private static String[] splitTwoPartsBy(String input, char splitChar) {
         int bracketDepth=0;
 
         for(int i=0;i<input.length();i++){
             char c=input.charAt(i);
 
-            if(bracketDepth == 0 && c=='+'){
+            if(bracketDepth == 0 && c==splitChar){
                 return new String[]{ input.substring(0,i),input.substring(i+1) };
             } else if(c == '(') {
-            bracketDepth++;
+                bracketDepth++;
             } else if(c == ')'){
                 bracketDepth--;
             }
         }
-        throw new IllegalArgumentException("Invalid input");
+        return null;
     }
 
     private static String removeUnnecessaryBrackets(String expr) {
